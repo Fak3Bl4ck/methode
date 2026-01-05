@@ -4,78 +4,161 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quizlet MPSI - Méthodes</title>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            min-height: 100vh; 
             padding: 20px;
         }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { text-align: center; color: white; margin-bottom: 30px; }
+        header h1 { font-size: 2.5em; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        header p { font-size: 1.1em; opacity: 0.9; }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        header {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
-        }
-        
-        header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        .controls {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .controls select,
-        .controls button {
-            padding: 12px 20px;
-            font-size: 1em;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            background: white;
-            color: #667eea;
-            font-weight: bold;
+        .controls { display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap; justify-content: center; }
+        .controls select, .controls button { 
+            padding: 12px 20px; 
+            font-size: 1em; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            background: white; 
+            color: #667eea; 
+            font-weight: bold; 
             transition: all 0.3s ease;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
-        
-        .controls select:hover,
-        .controls button:hover {
-            transform: translateY(-2px);
+        .controls select:hover, .controls button:hover { 
+            transform: translateY(-2px); 
             box-shadow: 0 6px 12px rgba(0,0,0,0.3);
         }
-        
-        .search-box {
-            width: 100%;
-            max-width: 400px;
-            padding: 12px 20px;
-            font-size: 1em;
-            border: 2px solid white;
-            border-radius: 8px;
-            background: rgba(255,255,255,0.9);
+        .search-box { 
+            width: 100%; 
+            max-width: 400px; 
+            padding: 12px 20px; 
+            font-size: 1em; 
+            border: 2px solid white; 
+            border-radius: 8px; 
+            background: rgba(255,255,255,0.9); 
             color: #333;
         }
+        .search-box::placeholder { color: #999; }
         
-        .search-box::placeholder {
-            color: #999;
+        .cards-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
+            gap: 20px; 
+            margin-bottom: 30px;
+        }
+        .card { 
+            background: white; 
+            border-radius: 10px; 
+            padding: 20px; 
+            cursor: pointer; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+            transition: all 0.3s ease;
+            min-height: 300px; 
+            display: flex; 
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        }
+        .card.flipped { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white;
+        }
+        
+        .card-front { 
+            font-weight: bold; 
+            color: #667eea; 
+            font-size: 1.1em; 
+            margin-bottom: 15px;
+        }
+        .card.flipped .card-front { color: #ddd; }
+        
+        .card-method { 
+            background: #f0f0f0; 
+            padding: 15px; 
+            border-radius: 8px; 
+            border-left: 4px solid #667eea; 
+            font-size: 0.95em; 
+            margin-bottom: 15px; 
+            color: #333;
+        }
+        .card.flipped .card-method { 
+            background: rgba(255,255,255,0.1); 
+            border-left-color: #ddd; 
+            color: white;
+        }
+        
+        .card-answer { 
+            background: #fff9e6; 
+            padding: 15px; 
+            border-radius: 8px; 
+            border-left: 4px solid #ffc107; 
+            font-size: 0.9em; 
+            color: #333; 
+            flex-grow: 1; 
+            display: none;
+            line-height: 1.6;
+            overflow-y: auto;
+        }
+        .card.flipped .card-answer { 
+            display: block; 
+            background: rgba(255,255,255,0.1); 
+            border-left-color: #ddd; 
+            color: white;
+        }
+        
+        .card-answer strong {
+            font-weight: bold;
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .card-answer mjx-container { margin: 12px 0; font-size: 1.05em; }
+        
+        .card-flip-hint { 
+            font-size: 0.8em; 
+            color: #999; 
+            text-align: center; 
+            margin-top: 15px;
+        }
+        .card.flipped .card-flip-hint { color: rgba(255,255,255,0.6); }
+        
+        .card-badge { 
+            position: absolute; 
+            top: 10px; 
+            right: 10px; 
+            background: #667eea; 
+            color: white; 
+            padding: 5px 12px; 
+            border-radius: 20px; 
+            font-size: 0.8em; 
+            font-weight: bold;
+        }
+        
+        .chapter-section { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin-bottom: 30px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .chapter-section h2 { 
+            color: #667eea; 
+            margin-bottom: 20px; 
+            font-size: 1.5em; 
+            border-bottom: 2px solid #667eea; 
+            padding-bottom: 10px;
         }
         
         .statistics {
@@ -90,7 +173,7 @@
             padding: 20px;
             border-radius: 10px;
             text-align: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
         .stat-card h3 {
@@ -106,210 +189,35 @@
             font-weight: bold;
         }
         
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .card {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            transition: all 0.3s ease;
-            min-height: 300px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-        }
-        
-        .card.flipped {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        
-        .card-front {
-            font-weight: bold;
-            color: #667eea;
-            font-size: 1.1em;
-            margin-bottom: 15px;
-        }
-        
-        .card.flipped .card-front {
-            color: #ddd;
-        }
-        
-        .card-method {
-            background: #f0f0f0;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
-            font-size: 0.95em;
-            margin-bottom: 15px;
-            color: #333;
-        }
-        
-        .card.flipped .card-method {
-            background: rgba(255,255,255,0.1);
-            border-left-color: #ddd;
-            color: white;
-        }
-        
-        .card-answer {
-            background: #fff9e6;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #ffc107;
-            font-size: 0.9em;
-            color: #333;
-            flex-grow: 1;
-            display: none;
-        }
-        
-        .card.flipped .card-answer {
-            display: block;
-            background: rgba(255,255,255,0.1);
-            border-left-color: #ddd;
-            color: white;
-        }
-        
-        .card-flip-hint {
-            font-size: 0.8em;
-            color: #999;
-            text-align: center;
-            margin-top: 15px;
-        }
-        
-        .card.flipped .card-flip-hint {
-            color: rgba(255,255,255,0.6);
-        }
-        
-        .card-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #667eea;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            font-weight: bold;
-        }
-        
-        .chapter-section {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
-        .chapter-section h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 1.5em;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 10px;
-        }
-        
-        .no-results {
-            text-align: center;
-            padding: 40px;
-            color: #999;
+        .no-results { 
+            text-align: center; 
+            padding: 40px; 
+            color: #999; 
             font-size: 1.2em;
-        }
-        
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: #764ba2;
-        }
-        
-        .btn-secondary {
-            background: #e0e0e0;
-            color: #333;
-        }
-        
-        .btn-secondary:hover {
-            background: #d0d0d0;
-        }
-        
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #e0e0e0;
+            background: white;
             border-radius: 10px;
-            margin-top: 10px;
-            overflow: hidden;
-        }
-        
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            transition: width 0.3s ease;
         }
         
         @media (max-width: 768px) {
-            header h1 {
-                font-size: 1.8em;
-            }
-            
-            .cards-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .controls {
-                flex-direction: column;
-            }
-            
-            .controls select,
-            .controls button {
-                width: 100%;
-            }
+            header h1 { font-size: 1.8em; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .controls { flex-direction: column; }
+            .controls select, .controls button { width: 100%; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>📚 Quizlet MPSI</h1>
+            <h1>Quizlet MPSI</h1>
             <p>Méthodes complètes pour apprendre par cœur</p>
         </header>
         
         <div class="controls">
-            <select id="chapterSelect" onchange="filterByChapter()">
+            <select id="chapterSelect" onchange="filterByChapter()" title="Filtrer par chapitre">
                 <option value="">Tous les chapitres</option>
                 <option value="1">Chapitre 1 - Analyse</option>
-                <option value="2">Chapitre 2 - Expo & Log</option>
+                <option value="2">Chapitre 2 - Expo Log</option>
                 <option value="3">Chapitre 3 - Algèbre</option>
                 <option value="4">Chapitre 4 - Circulaires</option>
                 <option value="5">Chapitre 5 - Complexes</option>
@@ -321,11 +229,9 @@
                 <option value="11">Chapitre 11 - Matrices</option>
                 <option value="12">Chapitre 12 - Structures</option>
             </select>
-            
-            <input type="text" id="searchBox" class="search-box" placeholder="🔍 Rechercher une méthode..." onkeyup="searchCards()">
-            
-            <button onclick="flipAllCards()">Retourner toutes les cartes</button>
-            <button onclick="toggleStats()">📊 Statistiques</button>
+            <input type="text" id="searchBox" class="search-box" placeholder="Rechercher une méthode..." onkeyup="searchCards()" aria-label="Rechercher">
+            <button onclick="flipAllCards()" title="Retourner toutes les cartes">Retourner toutes les cartes</button>
+            <button onclick="toggleStats()" title="Afficher les statistiques">Statistiques</button>
         </div>
         
         <div id="statisticsPanel" class="statistics" style="display: none;">
@@ -334,450 +240,56 @@
                 <div class="number" id="totalCount">0</div>
             </div>
             <div class="stat-card">
-                <h3>Méthodes maîtrisées</h3>
+                <h3>Maîtrisées</h3>
                 <div class="number" id="masteredCount">0</div>
             </div>
             <div class="stat-card">
                 <h3>Taux de complétion</h3>
                 <div class="number" id="completionRate">0%</div>
             </div>
-            <div class="stat-card">
-                <h3>Chapitres</h3>
-                <div class="number">12</div>
-            </div>
         </div>
         
         <div id="cardsContainer"></div>
     </div>
-    
+
     <script>
         const methods = [
-            // CHAPITRE 1 - Techniques de calculs en analyse
+            // CHAPITRE 3
             {
-                chapter: 1,
-                id: 'A.1',
-                title: 'A.1 Méthode - Bijections',
-                method: 'Trois méthodes algébriques pour déterminer si une application est une bijection. Propriétés conservées par la bijection réciproque.',
-                answer: '1. Montrer f injective : f(x)=f(y)⇒x=y\n2. Montrer f surjective : ∀y∈Y, ∃x∈X tel que f(x)=y\n3. Définition directe : ∃g unique telle que f∘g=idY et g∘f=idX\n\nPropriétés : Si f bijective et strictement monotone ⟹ f⁻¹ strictement monotone\nSi f impaire ⟹ f⁻¹ impaire'
-            },
-            {
-                chapter: 1,
-                id: 'A.2',
-                title: 'A.2 Méthode - Parité',
-                method: 'Déterminer la parité d\'une fonction. Propriétés des fonctions paires et impaires.',
-                answer: 'f paire : f(-x) = f(x)\nf impaire : f(-x) = -f(x)\n\nPropriétés :\n• f dérivable et paire ⟹ f\' impaire\n• f dérivable et impaire ⟹ f\' paire\n• f injective et paire ⟹ Domaine = {0}\n• Décomposition unique : f = fp + fi (fp paire, fi impaire)'
-            },
-            {
-                chapter: 1,
-                id: 'A.3',
-                title: 'A.3 Méthode - Inégalités',
-                method: 'Démontrer des inégalités dans ℝ de manière algébrique ou analytique. Retrouver les inégalités à l\'aide des courbes des fonctions.',
-                answer: 'Méthode algébrique : Développer et réduire\nMéthode analytique : Étudier une fonction h(x) = gauche - droite\n\nInégalités classiques :\n• |sin x| ≤ |x| pour x ∈ ℝ\n• sin x > (2/π)x pour x ∈ [0, π/2]\n• 1 - x²/2 ≤ cos x ≤ 1 pour x ∈ ℝ\n• ln(1+x) ≤ x pour x ∈ ]-1,+∞[\n• eˣ > 1 + x pour x ∈ ℝ'
-            },
-            {
-                chapter: 1,
-                id: 'A.4',
-                title: 'A.4 Méthode - Bijections analytiques',
-                method: 'Démontrer de manière analytique qu\'une application est bijective. Régularité de sa bijection réciproque.',
-                answer: '1. Étudier f : domaine, variations, limites\n2. Vérifier injectivité : f\' > 0 ou f\' < 0\n3. Vérifier surjectivité : lim f = inf et lim f = sup\n4. Dérivabilité de f⁻¹ : (f⁻¹)\'(y) = 1/f\'(f⁻¹(y))\n\nSi f strictement monotone continue ⟹ f⁻¹ existe et est continue'
-            },
-            {
-                chapter: 1,
-                id: 'A.5',
-                title: 'A.5 Méthode - Équivalents',
-                method: 'Deux manières de déterminer l\'équivalent d\'une fonction. Utilisation des équivalents. Montrer la continuité ou la dérivabilité d\'une fonction.',
-                answer: 'Définition : f(x) ~ g(x) en a si lim [f(x)/g(x)] = 1\n\nMéthode 1 (avec dérivée) : f(x) - f(a) ~ f\'(a)(x-a) si f\'(a) ≠ 0\nMéthode 2 (développements) : Utiliser Taylor\n\nEquivalents usuels :\n• sin x ~ x en 0\n• ln(1+x) ~ x en 0\n• (1+x)ᵅ ~ 1 + αx en 0\n• (sinc) x ~ 1 en 0'
-            },
-            
-            // CHAPITRE 2 - Fonctions exponentielle et logarithme
-            {
-                chapter: 2,
-                id: 'A.6',
-                title: 'A.6 Méthode - Puissances réelles',
-                method: 'Étudier une fonction définie par une fonction puissance réelle. Fonction puissance : Ensemble de définition, prolongement par continuité, dérivabilité, graphe en fonction de la puissance réelle et équivalent au voisinage de 1.',
-                answer: 'Ensemble de définition :\n• Si α ∈ ℕ : ℝ\n• Si α ∈ ℝ - ℕ : ℝ₊* ou ℝ₊ selon le contexte\n\nDérivabilité : (xᵅ)\' = αx^(α-1) sur ℝ₊*\n\nProlongement par continuité :\n• Si α > 0 : lim₍ₓ₋₀₊₎ xᵅ = 0\n• Si α = 0 : x⁰ = 1\n• Si α < 0 : lim₍ₓ₋₀₊₎ xᵅ = +∞\n\nComposition : f(x) = u(x)ᵅ = eᵅ ln u(x)'
-            },
-            {
-                chapter: 2,
-                id: 'A.7',
-                title: 'A.7 Méthode - Hyperboliques',
-                method: 'Fonction cosinus, sinus ou tangente hyperbolique : Ensemble de définition, continuité, dérivabilité, parité, formule trigonométrique hyperbolique, graphe et équivalent au voisinage de 0 d\'une fonction au choix de l\'interrogateur.',
-                answer: 'Définitions :\n• ch(x) = (eˣ + e⁻ˣ)/2 (paire)\n• sh(x) = (eˣ - e⁻ˣ)/2 (impaire)\n• th(x) = sh(x)/ch(x) (impaire)\n\nDérivées :\n• ch\'(x) = sh(x)\n• sh\'(x) = ch(x)\n• th\'(x) = 1/ch²(x)\n\nFormule fondamentale : ch²(x) - sh²(x) = 1\nEquivalents en 0 : sh(x) ~ x, ch(x) ~ 1, th(x) ~ x\n\nBijections :\n• ch : [0,+∞[ → [1,+∞[ avec argch(x) = ln(x + √(x²-1))\n• th : ℝ → ]-1,1[ bijection'
-            },
-            
-            // CHAPITRE 3 - Calculs algébriques
-            {
-                chapter: 3,
+            chapter: 3,
                 id: 'A.8',
                 title: 'A.8 Méthode - Télescopage',
                 method: 'Simplifier une somme par télescopage. Décomposition d\'une fraction en éléments simples.',
-                answer: 'Télescopage : Σ(k=0 à n) (uₖ₊₁ - uₖ) = uₙ₊₁ - u₀\n\nDécomposition en éléments simples :\n1/(x(x+1)(x+2)) = A/x + B/(x+1) + C/(x+2)\n\nCalcul : Multiplier par dénominateur et faire x = 0, -1, -2\nA = 1/2, B = -1, C = 1/2\n\nApplication : Σ 1/(k(k+1)(k+2)) se calcule par télescopage'
-            },
-            {
-                chapter: 3,
-                id: 'A.9',
-                title: 'A.9 Méthode - Sommes géométriques',
-                method: 'Simplifier la somme d\'une suite géométrique. Permuter deux signes Σ.',
-                answer: 'Somme géométrique :\nΣ(k=0 à n) qᵏ = (1-q^(n+1))/(1-q) si q ≠ 1\nΣ(k=0 à n) qᵏ = n+1 si q = 1\n\nDérivation des sommes :\nΣ(k=0 à n) k qᵏ = q(1-(n+1)qⁿ + nq^(n+1))/(1-q)²\n\nPermutation d\'indices :\nΣ(i=1 à n) Σ(j=1 à i) aᵢⱼ = Σ(j=1 à n) Σ(i=j à n) aᵢⱼ'
-            },
-            {
-                chapter: 3,
-                id: 'A.10',
-                title: 'A.10 Méthode - Binôme de Newton',
-                method: 'Factoriel d\'un entier. Utilisation de la formule du binôme de Newton.',
-                answer: 'Formule du binôme :\n(a+b)ⁿ = Σ(k=0 à n) C(n,k) aⁿ⁻ᵏ bᵏ\n\nSommes importantes :\n• Σ(k=0 à n) C(n,k) = 2ⁿ\n• Σ(k=0 à n) k C(n,k) = n·2^(n-1)\n• Σ(k=0 à n) k² C(n,k) = n(n+1)·2^(n-2)\n\nProduits :\n• Aₙ = 2·4·6···(2n) = 2ⁿ·n!\n• Bₙ = 1·3·5···(2n+1) = (2n+1)!/(2ⁿ·n!)'
-            },
-            {
-                chapter: 3,
-                id: 'A.11',
-                title: 'A.11 Méthode - Coefficients binomiaux',
-                method: 'Calcul de différentes sommes faisant intervenir des coefficients binomiaux.',
-                answer: 'Identité de Pascal :\nC(n,k) = C(n-1,k-1) + C(n-1,k)\n\nIdentité de Vandermonde :\nC(m+n,k) = Σ(j=0 à k) C(m,j)C(n,k-j)\n\nSommes alternées :\nΣ(k=0 à n) (-1)^k C(n,k) = 0\nΣ(k=0 à n, k pair) C(n,k) = 2^(n-1)\nΣ(k=0 à n, k impair) C(n,k) = 2^(n-1)\n\nFormule d\'inversion :\nSi aₙ = Σ(p=0 à n) C(n,p) bₚ alors bₙ = Σ(p=0 à n) (-1)^(n-p) C(n,p) aₚ'
+                answer: '**Télescopage :**\n$$\\sum_{k=0}^n (u_{k+1}-u_k)=u_n-u_0$$\n\n**Décomposition en éléments simples :**\n$$\\frac{1}{x(x+1)(x+2)}=\\frac{A}{x}+\\frac{B}{x+1}+\\frac{C}{x+2}$$\n\nMultiplier par dénominateur et faire \\(x=0,-1,-2\\) :\n$$A=\\frac12,\\quad B=-1,\\quad C=\\frac12$$'
             },
             
-            // CHAPITRE 4 - Fonctions circulaires
-            {
-                chapter: 4,
-                id: 'A.12',
-                title: 'A.12 Méthode - Circulaires',
-                method: 'Fonctions circulaires cosinus, sinus, tangente : Ensemble de définition, continuité, dérivabilité, parité, graphique, représentation sur le cercle trigonométrique, équivalent usuel en 0 au choix de l\'interrogateur.',
-                answer: 'Domaines et parité :\n• cos : ℝ → [-1,1] (paire)\n• sin : ℝ → [-1,1] (impaire)\n• tan : ℝ - {π/2 + kπ} → ℝ (impaire)\n\nDérivées :\n• cos\'(x) = -sin(x)\n• sin\'(x) = cos(x)\n• tan\'(x) = 1 + tan²(x) = 1/cos²(x)\n\nFormules fondamentales :\n• cos²x + sin²x = 1\n• cos(a±b) = cos a cos b ∓ sin a sin b\n• sin(a±b) = sin a cos b ± cos a sin b\n• tan(a-b) = (tan a - tan b)/(1 + tan a tan b)\n\nEquivalents en 0 :\n• sin x ~ x, cos x ~ 1, tan x ~ x'
-            },
-            {
-                chapter: 4,
-                id: 'A.13',
-                title: 'A.13 Méthode - Bijectivité circulaire',
-                method: 'Montrer qu\'une application est bijective en fonction de l\'énoncé. Citer sans hésitation toutes les formules de duplication de l\'angle.',
-                answer: 'Formules de duplication :\n• sin(2x) = 2sin(x)cos(x)\n• cos(2x) = cos²(x) - sin²(x) = 2cos²(x) - 1 = 1 - 2sin²(x)\n• tan(2x) = 2tan(x)/(1-tan²(x))\n\nBijections :\n• sin : [-π/2, π/2] → [-1,1] (bijection continue strictement croissante)\n• cos : [0,π] → [-1,1] (bijection continue strictement décroissante)\n• tan : ]-π/2, π/2[ → ℝ (bijection continue strictement croissante)\n\nDérivabilité des réciproques :\n• (arcsin)\'(x) = 1/√(1-x²)\n• (arccos)\'(x) = -1/√(1-x²)\n• (arctan)\'(x) = 1/(1+x²)'
-            },
-            {
-                chapter: 4,
-                id: 'A.14',
-                title: 'A.14 Méthode - Inverses circulaires',
-                method: 'Fonctions circulaires réciproques Arc cosinus, Arc sinus, Arc tangente : Ensemble de définition, continuité, dérivabilité, parité, graphique et équivalent usuel en 0 au choix de l\'interrogateur.',
-                answer: 'Arcsin : [-1,1] → [-π/2, π/2] (impaire, continue, dérivable)\nArccos : [-1,1] → [0,π] (paire par la relation arccos(x) = π/2 - arcsin(x))\nArctan : ℝ → ]-π/2, π/2[ (impaire, continue, dérivable)\n\nFormules importantes :\n• arcsin(x) + arccos(x) = π/2 pour x ∈ [-1,1]\n• arctan(x) + arctan(1/x) = π/2 si x > 0\n• arctan(x) + arctan(1/x) = -π/2 si x < 0\n\nEquivalents en 0 :\n• arcsin(x) ~ x, arctan(x) ~ x, arccos(x) ~ π/2 - x'
-            },
-            {
-                chapter: 4,
-                id: 'A.15',
-                title: 'A.15 Méthode - Équations circulaires',
-                method: 'Résoudre des équations faisant intervenir des fonctions circulaires ou circulaires réciproques.',
-                answer: 'sin(u) = sin(v) ⟺ u = v + 2kπ ou u = π - v + 2kπ\ncos(u) = cos(v) ⟺ u = ±v + 2kπ\ntan(u) = tan(v) ⟺ u = v + kπ\n\nRéduction :\na cos t + b sin t = √(a²+b²) cos(t - φ) où tan φ = b/a\n\nMéthodes :\n1. Linéarisation (produit-somme)\n2. Formules de Weierstrass : t = tan(x/2)\n3. Graphique ou tableau de variation'
-            },
-            {
-                chapter: 4,
-                id: 'A.16',
-                title: 'A.16 Méthode - Égalités circulaires',
-                method: 'Montrer l\'égalité de deux expressions faisant intervenir des fonctions circulaires ou circulaires réciproques.',
-                answer: 'Stratégies :\n1. Montrer que les dérivées sont égales et que les valeurs coïncident en un point\n2. Calculer le cosinus ou le sinus des deux côtés\n3. Utiliser des substitutions (t = tan(x/2))\n\nIdentité clé :\n2arctan(√((1-x)/(1+x))) = arccos(x) pour x ∈ [-1,1]\n\nMéthode :\n• Vérifier continuité et dérivabilité\n• Montrer que (gauche - droite)\' = 0\n• Vérifier égalité en un point (souvent x = 0 ou x = 1)'
-            },
+            { chapter: 3, 
+                id: 'A.9', 
+                title: 'A.9 Méthode - Sommes géométriques', 
+                method: 'Simplifier la somme d\'une suite géométrique. Permuter deux signes ∑.', 
+                answer: '**Somme géométrique:**\n$$\\sum_{k=0}^n q^k = \\frac{1-q^{n+1}}{1-q} \\text{ si } q \\neq 1$$\n$$\\sum_{k=0}^n q^k = n+1 \\text{ si } q = 1$$\n\n**Dérivation des sommes:**\n$$\\sum_{k=0}^n k q^{k-1} = \\frac{1-(n+1)q^n+nq^{n+1}}{(1-q)^2}$$' },
             
-            // CHAPITRE 5 - Nombres complexes
-            {
-                chapter: 5,
-                id: 'A.17',
-                title: 'A.17 Méthode - Conjugué complexe',
-                method: 'Utiliser le conjugué d\'un nombre complexe. Quelques formules sur la conjuguaison. Utiliser l\'inégalité triangulaire. Cas d\'égalité.',
-                answer: 'Conjugué : z̄ = a - ib si z = a + ib\nPropriétés :\n• z + z̄ = 2Re(z), z - z̄ = 2iIm(z)\n• zz̄ = |z|²\n• (z₁z₂)̄ = z̄₁z̄₂\n• |z̄| = |z|, arg(z̄) = -arg(z)\n\nInégalité triangulaire :\n|z₁ + z₂| ≤ |z₁| + |z₂|\n|z₁ - z₂| ≥ ||z₁| - |z₂||\n\nCas d\'égalité : |z₁ + z₂| = |z₁| + |z₂| ⟺ z₂ = λz₁ avec λ ≥ 0'
-            },
-            {
-                chapter: 5,
-                id: 'A.18',
-                title: 'A.18 Méthode - Sommes complexes',
-                method: 'Calculer la somme de termes s\'exprimant en fonction des fonctions circulaires. Factoriser la somme ou la différence de deux nombres complexes de même module.',
-                answer: 'Méthode : Utiliser eⁱˣ = cos(x) + i sin(x)\n\nΣ(k=0 à n) cos(kx) = sin((n+1)x/2)/sin(x/2) · cos(nx/2)\nΣ(k=0 à n) sin(kx) = sin((n+1)x/2)/sin(x/2) · sin(nx/2)\n\nSomme géométrique complexe :\nΣ(k=0 à n) qᵏ = (1-q^(n+1))/(1-q) si q ≠ 1\n\nFactorisation :\n1 + e^(iθ) = 2cos(θ/2)e^(iθ/2)\n1 - e^(iθ) = 2i sin(θ/2)e^(iθ/2)'
-            },
-            {
-                chapter: 5,
-                id: 'A.19',
-                title: 'A.19 Méthode - Équations du second degré',
-                method: 'Résoudre des équations du second degré dans ℂ.',
-                answer: 'az² + bz + c = 0 avec a ≠ 0\n\nDiscriminant : Δ = b² - 4ac\n\nCas 1 : Δ ≠ 0\nz = (-b ± √Δ)/(2a) où √Δ est une racine carrée complexe de Δ\n\nCas 2 : Δ = 0\nz = -b/(2a) (racine double)\n\nFormules de Vieta :\nz₁ + z₂ = -b/a\nz₁ · z₂ = c/a\nFactorisation : az² + bz + c = a(z - z₁)(z - z₂)\n\nCas réel : Δ < 0 ⟹ 2 racines complexes conjuguées'
-            },
-            {
-                chapter: 5,
-                id: 'A.20',
-                title: 'A.20 Méthode - Racines n-ièmes de l\'unité',
-                method: 'Définition des racines n-ième de l\'unité. Nombre de racines n-ième de l\'unité. Expression. Somme des racines n-ième de l\'unité. Puissance d\'une racine n-ième de l\'unité. Produit et quotient de deux racines n-ième de l\'unité.',
-                answer: 'Solutions de zⁿ = 1 :\nωₖ = e^(2iπk/n) pour k = 0,1,...,n-1\n\nNombre : Exactement n racines distinctes\n\nPropriétés :\n• |ωₖ| = 1 pour tout k\n• ωₖⁿ = 1\n• ωₖ = ω₁ᵏ où ω₁ = e^(2iπ/n)\n\nSomme :\nΣ(k=0 à n-1) ωₖ = 0\n\nProduit :\nΠ(k=0 à n-1) ωₖ = (-1)^(n-1)\n\nGroupes : (Uₙ, ×) est un groupe cyclique d\'ordre n engendré par ω₁'
-            },
-            {
-                chapter: 5,
-                id: 'A.21',
-                title: 'A.21 Méthode - Racines n-ièmes d\'un nombre',
-                method: 'Détermination des racines n-ième d\'un nombre complexe. Nombre de racines n-ième d\'un nombre complexe.',
-                answer: 'Solutions de zⁿ = a avec a ∈ ℂ, a ≠ 0:\n\nSi a = |a|e^(iθ) :\nzₖ = |a|^(1/n) · e^(i(θ + 2πk)/n) pour k = 0,1,...,n-1\n\nNombre : Exactement n racines distinctes\n\nPropriétés :\n• |zₖ| = |a|^(1/n) constant\n• Espacées angulairement de 2π/n\n\nInterprétation géométrique :\nLes racines forment un polygone régulier inscrit dans le cercle de rayon |a|^(1/n)\n\nCas particulier : Si a réel > 0, une racine réelle positive, autres complexes'
-            },
+            { chapter: 3, 
+                id: 'A.10', 
+                title: 'A.10 Méthode - Binôme de Newton', 
+                method: 'Factoriel d\'un entier. Utilisation de la formule du binôme de Newton.', 
+                answer: '**Formule du binôme:**\n$$(a+b)^n = \\sum_{k=0}^n \\binom{n}{k} a^k b^{n-k}$$\n\n**Propriétés importantes:**\n$$\\sum_{k=0}^n \\binom{n}{k} = 2^n$$\n$$\\sum_{k=0}^n k \\binom{n}{k} = n 2^{n-1}$$\n$$\\sum_{k=0}^n k^2 \\binom{n}{k} = n(n-1)2^{n-2} + n 2^{n-1}$$' },
             
-            // CHAPITRE 6 - Calcul de primitives
-            {
-                chapter: 6,
-                id: 'A.22',
-                title: 'A.22 Méthode - Intégration par parties',
-                method: 'Réussir une intégration par parties. Choisir les fonctions. Hypothèses.',
-                answer: 'Formule : ∫u\'v dx = uv - ∫uv\' dx\n\nChoix des fonctions (LIATE) :\n1. Logarithmes (ln, log)\n2. Inverses (arcsin, arctan)\n3. Algébriques (x, x², ...)\n4. Trigonométriques (sin, cos)\n5. Exponentielles (e^x, a^x)\n\nExemples :\n• ∫x cos x dx = x sin x + cos x + C\n• ∫x e^x dx = (x-1)e^x + C\n• ∫ln x dx = x ln x - x + C\n\nIntégrales successives :\nIₙ = ∫ sin^n x dx récurrence avec réduction d\'ordre'
-            },
-            {
-                chapter: 6,
-                id: 'A.23',
-                title: 'A.23 Méthode - Suites intégrales',
-                method: 'Étudier une suite définie par une intégrale. Liaison entre la propriété sur la suite et la propriété sur l\'intégrale.',
-                answer: 'Méthode :\n1. Calculer premiers termes (W₀, W₁, W₂)\n2. Montrer monotonie : Wₙ₊₁ - Wₙ ou Wₙ₊₁/Wₙ\n3. Montrer bornitude\n4. Conclure à la convergence\n5. Relation de récurrence (par IPP)\n\nExemple : Wₙ = ∫₀^(π/2) sin^n x dx\nRelation : nWₙ = (n-1)Wₙ₋₂\n\nFormules :\nW₂ₙ = (2n)!π / (2^(2n+1)(n!)²)\nW₂ₙ₊₁ = 2^(2n)(n!)² / (2n+1)!\n\nLimite : Wₙ ~ √(π/(2n))'
-            },
-            {
-                chapter: 6,
-                id: 'A.24',
-                title: 'A.24 Méthode - Changement de variable',
-                method: 'Réussir un changement de variable. Choisir les fonctions. Présentation du changement de variable. Hypothèses.',
-                answer: 'Formule : ∫ f(x) dx = ∫ f(φ(t))φ\'(t) dt où x = φ(t)\n\nHypothèses :\n• φ bijection continue\n• φ dérivable\n• φ\' continue\n\nChoix du changement :\n1. √(a² - x²) : x = a sin(t)\n2. √(a² + x²) : x = a tan(t) ou a sh(t)\n3. √(x² - a²) : x = a ch(t)\n4. 1/(1+x²) : x = tan(t)\n\nExemples :\n∫ 1/sin(x) dx avec t = cos(x) : ∫ -1/(1-t²) dt = ln|tan(x/2)| + C'
-            },
-            {
-                chapter: 6,
-                id: 'A.25',
-                title: 'A.25 Méthode - Majoration d\'intégrales',
-                method: 'Majorer, minorer ou borner une intégrale : deux théorèmes utilisés et une illustration graphique.',
-                answer: 'Théorème 1 (Comparaison) :\nSi |f(x)| ≤ M sur [a,b] alors |∫ₐᵇ f(x) dx| ≤ M(b-a)\n\nThéorème 2 (Croissance) :\nSi f(x) ≤ g(x) sur [a,b] alors ∫ₐᵇ f ≤ ∫ₐᵇ g\n\nApplication :\nt - t³/3 ≤ arctan(t) ≤ t pour t ∈ [0,+∞[\n\nDéveloppement :\narctan(t) = Σ(k=0 à n) (-1)ᵏ t^(2k+1)/(2k+1) + Rₙ(t)\noù |Rₙ(t)| ≤ ∫₀ᵗ |x|^(2n+2)/(1+x²) dx ≤ t^(2n+3)/(2n+3)'
-            },
-            
-            // CHAPITRE 7 - Équations différentielles
-            {
-                chapter: 7,
-                id: 'A.26',
-                title: 'A.26 Méthode - Équations du 1er ordre',
-                method: 'Résoudre une équation différentielle du premier ordre. Problème de Cauchy',
-                answer: 'Équation linéaire homogène : y\' + a(x)y = 0\nSolution : y(x) = Ce^(-∫a(x)dx)\n\nÉquation linéaire complète : y\' + a(x)y = b(x)\nMéthode variation de la constante :\ny = e^(-∫a) [∫b e^(∫a) dx + C]\n\nProblème de Cauchy :\n{y\' + a(x)y = b(x)\n{y(x₀) = y₀\n\nThéorème : Solution unique si a(x) et b(x) continues sur un intervalle contenant x₀\n\nCas particuliers :\n• y\' = f(y) : séparation des variables\n• Bernoulli : y\' + ay = by^n'
-            },
-            {
-                chapter: 7,
-                id: 'A.27',
-                title: 'A.27 Méthode - Recollement de solutions',
-                method: 'Équation sous forme non résolue et recollement de solutions. Type de raisonnement. Méthode pour étudier le recollement.',
-                answer: 'Forme : F(x, y, y\') = 0\n\nStratégie :\n1. Résoudre sur ]0, +∞[ et ]-∞, 0[ séparément\n2. Étudier le recollement en x = 0\n\nContinuité : Vérifier lim₍ₓ₋₀₊₎ y(x) = lim₍ₓ₋₀₋₎ y(x)\n\nDérivabilité : Vérifier existence de y\'(0)\n\nExemple : xy\' - y = g(x)\n- Sur ]0,+∞[ : y(x) = cx + ∫ g(t)/t dt\n- Sur ]-∞,0[ : y(x) = cx + ∫ g(t)/t dt\n- Recollement en 0 : continuité puis dérivabilité'
-            },
-            {
-                chapter: 7,
-                id: 'A.28',
-                title: 'A.28 Méthode - Équations du 2e ordre',
-                method: 'Résoudre une équation différentielle du second ordre.',
-                answer: 'Équation linéaire du 2e ordre : ay\'\' + by\' + cy = f(x)\n\nÉtape 1 : Résoudre l\'équation homogène ay\'\' + by\' + cy = 0\nÉquation caractéristique : ar² + br + c = 0\n\nCas 1 : Δ > 0, r₁ ≠ r₂ réels\ny₀ = C₁e^(r₁x) + C₂e^(r₂x)\n\nCas 2 : Δ = 0, r double\ny₀ = (C₁ + C₂x)e^(rx)\n\nCas 3 : Δ < 0, r = α ± iβ complexes\ny₀ = e^(αx)(C₁cos(βx) + C₂sin(βx))\n\nÉtape 2 : Solution particulière (variation constantes ou essai)\ny = y₀ + yₚ'
-            },
-            {
-                chapter: 7,
-                id: 'A.29',
-                title: 'A.29 Méthode - Équations fonctionnelles',
-                method: 'Résoudre une équation fonctionnelle.',
-                answer: 'Type 1 : f(x+y) = f(x)f(y)\nSolution : f(x) = e^(cx) ou f(x) = 0\n\nType 2 : f\'(x) + f(-x) = e^x\nPoser g(x) = f(x) + f(-x) et h(x) = f(x) - f(-x)\n\nStratégie générale :\n1. Supposer f dérivable\n2. Dériver l\'équation pour obtenir relations\n3. Résoudre le système différentiel\n4. Vérifier solution\n5. Éventuellement déduire unicité\n\nProprié : Composition rationnelle ou analytique'
-            },
-            
-            // CHAPITRE 8 - Rudiments de logique
-            {
-                chapter: 8,
-                id: 'A.30',
-                title: 'A.30 Méthode - Raisonnements logiques',
-                method: 'Utiliser différents raisonnements possibles pour déterminer la véracité d\'une assertion.',
-                answer: 'Raisonnements :\n1. Direct : Hypothèse ⟹ Conclusion\n2. Contraposée : ¬Conclusion ⟹ ¬Hypothèse\n3. Par l\'absurde : Supposer ¬Conclusion et dériver contradiction\n4. Par disjonction : Énumérer tous les cas\n5. Par récurrence : Initialisation + Hérédité\n\nExemples :\n• n pair ⟺ n² pair\n• √2 irrationnel : supposer √2 = p/q irréductible\n• Unicité d\'une décomposition (fp, fi) paires/impaires'
-            },
-            
-            // CHAPITRE 9 - Ensembles et applications
-            {
-                chapter: 9,
-                id: 'A.31',
-                title: 'A.31 Méthode - Égalité d\'ensembles',
-                method: 'Citer trois méthodes pour montrer que deux ensembles sont égaux.',
-                answer: 'Méthode 1 : Double inclusion\nA = B ⟺ (A ⊂ B ET B ⊂ A)\nMontrer x ∈ A ⟹ x ∈ B et réciproquement\n\nMéthode 2 : Table de vérité ou algèbre booléenne\nA ∪ (B ∩ C) = (A ∪ B) ∩ (A ∪ C)\nA ∩ (B ∪ C) = (A ∩ B) ∪ (A ∩ C)\n\nMéthode 3 : Ensemble particulier\nDécomposition unique : f = fp + fi\npour (fp, fi) ∈ (Paires × Impaires)\n\nDifférence symétrique :\nA △ B = (A - B) ∪ (B - A)'
-            },
-            {
-                chapter: 9,
-                id: 'A.32',
-                title: 'A.32 Méthode - Images directes/réciproques',
-                method: 'Déterminer l\'image directe et l\'image réciproque d\'un ensemble par une application. Se souvenir de l\'erreur à ne pas commettre.',
-                answer: 'Image directe : f(A) = {y ∈ Y : ∃x ∈ A, f(x) = y}\nImage réciproque : f⁻¹(B) = {x ∈ X : f(x) ∈ B}\n\nPropriétés :\nf(A ∪ B) = f(A) ∪ f(B)\nf(A ∩ B) ⊂ f(A) ∩ f(B) (inégalité stricte possible)\nf⁻¹(B ∪ C) = f⁻¹(B) ∪ f⁻¹(C)\nf⁻¹(B ∩ C) = f⁻¹(B) ∩ f⁻¹(C)\n\nERREUR : f(f⁻¹(B)) ⊂ B et A ⊂ f⁻¹(f(A))\nÉgalité ssi f bijective'
-            },
-            {
-                chapter: 9,
-                id: 'A.33',
-                title: 'A.33 Méthode - Propriétés de composée',
-                method: 'Montrer qu\'une application est injective, surjective ou bijective à l\'aide des propriétés sur la composée.',
-                answer: 'Composée injective :\nu injective et v injective ⟹ v∘u injective\n\nComposée surjective :\nu surjective et v surjective ⟹ v∘u surjective\n\nProprié importantes :\n• Si v∘u injective ⟹ u injective\n• Si v∘u surjective ⟹ v surjective\n• Si v∘u bijective et v injective ⟹ u surjective\n\nRéciproque partielle :\nSi g∘f = idₑ ⟹ f injective et g surjective\nSi f∘g = idₓ ⟹ f surjective et g injective'
-            },
-            {
-                chapter: 9,
-                id: 'A.34',
-                title: 'A.34 Méthode - Injectivité',
-                method: 'Montrer qu\'une application est injective à l\'aide de deux méthodes algébriques et d\'une méthode analytique. Difficulté pour montrer qu\'une fonction est injective.',
-                answer: 'Méthode algébrique 1 :\nf(x) = f(y) ⟹ x = y\n\nMéthode algébrique 2 :\nMontrer que f(x) = f(y) ⟹ x = y à l\'aide d\'une caractérisation\nExemple : ∀A ∈ P(E), A = f⁻¹(f(A))\n\nMéthode analytique :\nSi f dérivable, f\' > 0 ou f\' < 0 ⟹ f injective\n\nDifficulté : Confondre injectivité et stricte monotonie\nUne fonction peut être injective sans être strictement monotone'
-            },
-            {
-                chapter: 9,
-                id: 'A.35',
-                title: 'A.35 Méthode - Surjectivité',
-                method: 'Montrer qu\'une application est surjective à l\'aide de deux méthodes algébriques et d\'une méthode analytique. Difficulté pour montrer qu\'une fonction est surjective.',
-                answer: 'Méthode algébrique 1 :\n∀y ∈ Y, ∃x ∈ X : f(x) = y\n\nMéthode algébrique 2 :\nMontrer f(f⁻¹(B)) = B pour tout B ⊂ Y\n\nMéthode analytique :\n∀y ∈ Y, résoudre f(x) = y admet au moins une solution\nVérifier : lim f = -∞ et lim f = +∞ (si continue)\n\nDifficulté : L\'image est l\'ensemble cible Y\nf : ℝ₊* → ℝ, x ↦ eˣ - 1/x est surjective'
-            },
-            {
-                chapter: 9,
-                id: 'A.36',
-                title: 'A.36 Méthode - Bijectivité',
-                method: 'Donner trois méthodes pour montrer qu\'une application est bijective et deux manières pour déterminer sa bijection réciproque.',
-                answer: 'Méthode 1 (Algébrique) :\nMontrer injective ET surjective\n\nMéthode 2 (Réciproque) :\nExhiber g telle que f∘g = idᵧ et g∘f = idₓ\n\nMéthode 3 (Analytique) :\nMontrer f continue, strictement monotone, avec lim = ±∞\n\nRéciproque 1 :\nDe f(x) = y, exprimer x en fonction de y ⟹ f⁻¹\n\nRéciproque 2 :\nRésoudre f∘g = idᵧ pour trouver g = f⁻¹\n\nExemple : f(z) = (z-i)/(z+i) : ℂ₊ → D, bijection\nf⁻¹(w) = i(1+w)/(1-w)'
-            },
-            {
-                chapter: 9,
-                id: 'B.1',
-                title: 'B.1 Méthode - Relations d\'ordre',
-                method: 'Montrer qu\'une relation binaire est une relation d\'ordre. Recherche et existence des plus petit et plus grand éléments dans les ensembles usuels. Recherche et existence des bornes supérieures et inférieures dans ℝ.',
-                answer: 'Relation d\'ordre :\n1. Réflexive : x R x\n2. Antisymétrique : x R y ET y R x ⟹ x = y\n3. Transitive : x R y ET y R z ⟹ x R z\n\nExemple : Divisibilité dans ℕ\n• Réflexive : x | x\n• Antisymétrique : x | y ET y | x ⟹ x = y\n• Transitive : x | y ET y | z ⟹ x | z\n\nBornes :\nMajorée : ∃M : ∀x ∈ A, x ≤ M\nsup(A) : plus petit majorant (existe dans ℝ)\ninf(A) : plus grand minorant'
-            },
-            
-            // CHAPITRE 10 - Ensembles de nombres
-            {
-                chapter: 10,
-                id: 'A.37',
-                title: 'A.37 Méthode - Récurrence',
-                method: 'Citer les différents types de récurrence. Rédiger correctement un raisonnement par récurrence. Que ne faut-il pas confondre ? Expliciter les deux objets dans chaque cas.',
-                answer: 'Types de récurrence :\n1. Simple : P(0) ∧ (P(n) ⟹ P(n+1)) ⟹ ∀n ∈ ℕ, P(n)\n2. Forte : P(0) ∧ (∀k ≤ n, P(k) ⟹ P(n+1)) ⟹ ∀n ∈ ℕ, P(n)\n3. Descendante : P(n₀) ∧ (P(n) ⟹ P(n-1)) ⟹ ∀n ≤ n₀, P(n)\n4. Bien-fondée : (∀y < x, P(y) ⟹ P(x)) ⟹ ∀x, P(x)\n\nRédaction :\nInitialisation : Vérifier P(0)\nHérédité : Supposer P(n) vraie, montrer P(n+1)\nConclusion : ∀n ∈ ℕ, P(n)\n\nSuite Fibonacci : Φⁿ + Ψⁿ ∈ ℕ'
-            },
-            {
-                chapter: 10,
-                id: 'A.38',
-                title: 'A.38 Méthode - Partie entière',
-                method: 'Savoir travailler avec la fonction partie entière. Courbe. Propriété de régularité.',
-                answer: 'Définition : ⌊x⌋ = max{n ∈ ℤ : n ≤ x}\nPropriétés :\n• ⌊x⌋ = x ⟺ x ∈ ℤ\n• ⌊-x⌋ = -⌈x⌉\n• Croissante sur ℝ\n• Sauts en points entiers\n\nContinuité :\n• Continue à droite en tout point\n• Discontinue à gauche aux points entiers\n• Continue et dérivable sur ℝ ∖ ℤ, avec dérivée 0\n• Continue par morceaux\n\nFormule : ⌊nx⌋/n → x (Propriété d\'approximation)\n\nGraffe : Escalier montant'
-            },
-            {
-                chapter: 10,
-                id: 'A.39',
-                title: 'A.39 Méthode - Bornes supérieures',
-                method: 'Donner trois méthodes pour déterminer la valeur d\'une borne supérieure d\'une partie non vide de ℝ. Existence de la borne supérieure.',
-                answer: 'Définition :\nM = sup(A) ⟺ (∀x ∈ A, x ≤ M) ∧ (∀ε > 0, ∃x ∈ A : x > M - ε)\n\nMéthode 1 : Trouver M tel que ∀x ∈ A, x ≤ M et M ∈ A\n\nMéthode 2 : Montrer ∀x ∈ A, x ≤ M et ∀ε > 0, ∃x ∈ A : x > M - ε\n\nMéthode 3 : Calcul direct\nA = {m/(nm+1) : m,n ∈ ℕ*}\nsup(A) = 1 atteint en m = 1, n = 1\n\nThéorème : Toute partie non vide majorée de ℝ admet une borne sup\ninf(A) + sup(A) = propriété duale'
-            },
-            {
-                chapter: 10,
-                id: 'A.40',
-                title: 'A.40 Méthode - Normes infinies',
-                method: 'Justifier l\'existence d\'une norme infinie de manière générale et dans le cas des fonctions continues. Calculer une norme infinie.',
-                answer: 'Norme infinie :\n‖f‖∞ = sup{|f(x)| : x ∈ E}\n\nExistence :\n1. Si E fini : maximum atteint\n2. Si f continue sur [a,b] compact : maximum atteint (Weierstrass)\n3. Si f bornée sur E quelconque : sup existe par axiome de complétude\n\nPropriétés (Norme) :\n• ‖f‖∞ ≥ 0 et = 0 ⟺ f = 0\n• ‖λf‖∞ = |λ| ‖f‖∞\n• ‖f + g‖∞ ≤ ‖f‖∞ + ‖g‖∞\n\nExemple :\nf(x) = x/(1+nx) sur ℝ₊\n‖f‖∞ = 1/(2√n) atteint en x = 1/√n'
-            },
-            {
-                chapter: 10,
-                id: 'B.2',
-                title: 'B.2 Méthode - Adhérence et intérieur',
-                method: 'Déterminer l\'adhérence (deux méthodes) et l\'intérieur d\'une partie de ℝ. Que dire d\'une suite à valeurs dans I qui converge ?',
-                answer: 'Adhérence Ā :\n• Méthode 1 : Plus petit fermé contenant A\n• Méthode 2 : Ensemble des limites de suites dans A\nℤ̄ = ℤ, Q̄ = ℝ\n\nIntérieur A° :\n• Plus grand ouvert contenu dans A\n\nPropriétés :\nSi (uₙ) ⊂ A et uₙ → ℓ alors ℓ ∈ Ā\n\nFormules :\nA ∩ B̄ ⊂ Ā ∩ B̄ (inclusion stricte possible)\n°(A ∩ B) = °A ∩ °B\nℝ\\ Ā = °(ℝ \\ A)\n\nFermé : A = Ā\nOuvert : A = °A'
-            },
-            
-            // CHAPITRE 11 - Matrices
-            {
-                chapter: 11,
-                id: 'A.41',
-                title: 'A.41 Méthode - Systèmes linéaires',
-                method: 'Résolution d\'un système. Structure des solutions d\'un système.',
-                answer: 'Système AX = B\n\nMatrice AX combinaison linéaire des colonnes de A\n\nCas 1 : rg(A) = n = nombre d\'équations indépendantes\nSolution unique X = A⁻¹B\n\nCas 2 : rg(A) < n et rg(A|B) = rg(A)\nInfinité de solutions : espace affine dim = n - rg(A)\n\nCas 3 : rg(A) < rg(A|B)\nPas de solution\n\nCathode : Élimination Gauss-Jordan\nMéthode : Matrice augmentée [A|B]'
-            },
-            {
-                chapter: 11,
-                id: 'A.42',
-                title: 'A.42 Méthode - Matrices élémentaires',
-                method: 'Travailler avec les matrices élémentaires. Intérêt de ces matrices.',
-                answer: 'Matrice élémentaire Eᵢ,ⱼ :\n• Position (i,j) : 1, ailleurs : 0\n• Tout A = Σ [A]ᵢ,ⱼ Eᵢ,ⱼ\n\nProduit :\nEᵢ,ⱼ Eₖ,ₗ = δⱼₖ Eᵢ,ₗ\n\nApplications élémentaires :\n• Permuter lignes L ↔ L\' : multiplier à gauche par P\n• Ajouter c·L à L\' : multiplier par matrice triangulaire\n• Multiplier L par c : multiplier par diagonale\n\nInversibilité :\nMatrices élémentaires sont inversibles\nA inversible ⟺ produit de matrices élémentaires'
-            },
-            {
-                chapter: 11,
-                id: 'A.43',
-                title: 'A.43 Méthode - Puissances de matrices',
-                method: 'Calculer la puissance d\'une matrice.',
-                answer: 'Diagonalisable :\nSi A = PDP⁻¹ où D diagonale\nAⁿ = PDⁿP⁻¹\n\nNilpotente :\nNⁿ₀ⁿ = 0 et Nⁿ₁ⁿ ≠ 0 (ordre de nilpotence n₀)\nM = aI + N (Jordan) :\nMᵖ = Σ(k=0 à p) C(p,k) aᵖ⁻ᵏ Nᵏ\n\nExemple :\nMatrice compagne avec récurrence\nAⁿ = (n-1)2ⁿ⁺¹ + 2 pour Sₙ = Σ k·2ᵏ\n\nFormule de Cayley-Hamilton :\nP(A) = 0 pour P polynôme caractéristique'
-            },
-            {
-                chapter: 11,
-                id: 'A.44',
-                title: 'A.44 Méthode - Matrices inversibles',
-                method: 'Travailler avec les matrices inversibles. Montrer qu\'une matrice est inversible ou n\'est pas inversible.',
-                answer: 'Condition : det(A) ≠ 0 ⟺ A inversible\n\nFormule :\nA⁻¹ = (1/det(A)) com(A)ᵀ\n\nPropriétés :\n• (AB)⁻¹ = B⁻¹A⁻¹\n• (Aᵀ)⁻¹ = (A⁻¹)ᵀ\n• (Aⁿ)⁻¹ = (A⁻¹)ⁿ\n\nCritères d\'inversibilité :\n1. Si Nᵏ = 0 (nilpotent), alors (I - N)⁻¹ existe\n   (I - N)⁻¹ = I + N + N² + ... + Nᵏ⁻¹\n\n2. Si A² + A - 2I = 0, montrer A inversible\n   A⁻¹ = (A + I)/3\n\n3. Utiliser Cayley-Hamilton'
-            },
-            {
-                chapter: 11,
-                id: 'A.45',
-                title: 'A.45 Méthode - Transposées',
-                method: 'Calculer avec la transposée d\'une matrice. Propriétés des matrices symétriques et antisymétriques.',
-                answer: 'Transposée :\n(AB)ᵀ = BᵀAᵀ\n(Aᵀ)⁻¹ = (A⁻¹)ᵀ\n\nMatrice symétrique (Sₙ) :\nAᵀ = A, valeurs propres réelles, vecteurs propres orthogonaux\n\nMatrice antisymétrique (Aₙ) :\nAᵀ = -A, coefficients diagonaux = 0\n\nDécomposition :\nTout A = U + V avec U symétrique, V antisymétrique\nU = (A + Aᵀ)/2, V = (A - Aᵀ)/2\n\nExemple :\nA = [[-1, 2], [1, -2]] = U + V\nU = [[-1, 3/2], [3/2, -2]], V = [[0, 1/2], [-1/2, 0]]'
-            },
-            {
-                chapter: 11,
-                id: 'A.46',
-                title: 'A.46 Méthode - Trace de matrice',
-                method: 'Calculer la trace d\'une matrice.',
-                answer: 'Trace : Tr(A) = Σᵢ [A]ᵢ,ᵢ (somme diagonale)\n\nPropriétés :\n• Tr(A + B) = Tr(A) + Tr(B)\n• Tr(cA) = c·Tr(A)\n• Tr(AB) = Tr(BA)\n• Tr(Aᵀ) = Tr(A)\n\nApplication :\nTr(AAᵀ) = Σᵢ,ⱼ [A]²ᵢ,ⱼ = 0 ⟹ A = 0\n\nRésolution :\nX + Tr(X)·A = B\nPrendre trace : Tr(X) + Tr(X)·Tr(A) = Tr(B)\nTr(X) = (Tr(B))/(1 + Tr(A)) si 1 + Tr(A) ≠ 0'
-            },
-            
-            // CHAPITRE 12 - Structures algébriques
-            {
-                chapter: 12,
-                id: 'A.47',
-                title: 'A.47 Méthode - Sous-groupes',
-                method: 'Montrer qu\'un ensemble est un sous-groupe. Calculer dans un sous-groupe.',
-                answer: 'Critère :\nH sous-groupe de G ⟺ H ≠ ∅ et ∀x,y ∈ H : xy⁻¹ ∈ H\n\nPropriétés :\n• Élément neutre de H = élément neutre de G\n• Symétrique d\'un élément dans H = symétrique dans G\n\nExemples :\n• Z(G) = {a ∈ G : xa = ax ∀x ∈ G} (centre)\n• gHg⁻¹ = {ghg⁻¹ : h ∈ H} (conjugué)\n• ∩ᵢ Hᵢ est un sous-groupe\n• H ∪ K pas toujours sous-groupe\n\nUnion de sous-groupes :\nH₁ ∪ H₂ sous-groupe ⟺ H₁ ⊂ H₂ ou H₂ ⊂ H₁'
-            },
-            {
-                chapter: 12,
-                id: 'A.48',
-                title: 'A.48 Méthode - Structure de ℤ',
-                method: 'Travailler dans la structure de groupe et d\'anneau de ℤ. Groupes isomorphes à (ℤ, +).',
-                answer: 'Groupes de ℤ :\nTout sous-groupe de (ℤ,+) = nℤ pour unique n ∈ ℕ\nmℤ = nℤ ⟺ |m| = |n|\n\nAnneau de ℤ :\n(ℤ,+,×) : commutatif, intègre (pas de diviseurs de 0), principal\n\nGroupes d\'ordre n :\nϕₘ : ℤ → G, ϕₘ(n) = gⁿ\nIm(ϕₘ) = ⟨g⟩ = sous-groupe engendré par g\nker(ϕₘ) = mℤ où m = ordre de g\n\nPériodique :\nSuite uₙ₊ₘ = uₙ ⟺ uₙ ∈ mℤ/ℤ'
-            },
-            {
-                chapter: 12,
-                id: 'A.49',
-                title: 'A.49 Méthode - Morphismes',
-                method: 'Montrer qu\'une application est un morphisme de groupe ou d\'anneau. Nature de l\'image et du noyau d\'un morphisme de groupe et d\'un morphisme d\'anneau.',
-                answer: 'Morphisme de groupe :\nf : G → H morphisme ⟺ f(xy) = f(x)f(y)\n\nPropriétés :\n• f(eG) = eH\n• f(x⁻¹) = f(x)⁻¹\n• Im(f) sous-groupe de H\n• ker(f) = {x ∈ G : f(x) = eH} sous-groupe de G\n\nCritères :\n• f injective ⟺ ker(f) = {e}\n• f surjective ⟺ Im(f) = H\n\nAutomorphisme :\nϕₐ(x) = axa⁻¹ isomorphisme (conjugaison)\n\nInversion :\nSi f bijectif, f⁻¹ morphisme\nThéorème : G/ker(f) ≃ Im(f)'
-            },
-            {
-                chapter: 12,
-                id: 'B.3',
-                title: 'B.3 Méthode - Groupes cycliques',
-                method: 'Travailler dans un groupe cyclique. Commutativité. Structure des groupes cycliques.',
-                answer: 'Groupe cyclique :\nG = ⟨g⟩ engendré par un élément\nG = {e, g, g², ..., gⁿ⁻¹} si ordre n\n\nPropriétés :\n• Commutatif\n• Tout sous-groupe cyclique\n• Structure simple\n\nRacines de l\'unité :\nUₙ = {e^(2iπk/n) : k = 0,...,n-1} cyclique d\'ordre n\n\nGroupes finis :\n• Ordre premier ⟹ cyclique\n• Ordre n ⟹ sous-groupe d\'ordre d pour tout d | n\n\nSous-groupes finis de (ℂ*,×) :\nSont tous de la forme Uₙ (racines n-ièmes de l\'unité)'
-            },
-            {
-                chapter: 12,
-                id: 'B.4',
-                title: 'B.4 Méthode - Permutations',
-                method: 'Décomposer une permutation en produit de cycles à supports disjoints puis en produit de transpositions. Déterminer l\'inverse d\'une permutation. Connaître l\'ordre d\'une permutation. Calculer la signature d\'une permutation',
-                answer: 'Cycle (a₁, a₂, ..., aₖ) :\nProcédure : Lire σ colonnes par colonnes, regrouper en cycles\n\nDécomposition cycles disjoints :\nσ = (1 2 6)(3 4 5) est produit de 3-cycles\n\nTransposition = 2-cycle\nTout cycle = produit transpositions\n(a₁...aₖ) = (a₁ aₖ)(a₁ aₖ₋₁)...(a₁ a₂)\n\nOrdre :\nord(σ) = ppcm(longueurs cycles)\n\nSignature :\nsgn(σ) = (-1)^(nombre transpositions) = (-1)^(n - nombre cycles)\n\nGroupes alternés :\nAₙ = ker(sgn) : permutations paires\n|Aₙ| = n!/2'
-            },
-            {
-                chapter: 12,
-                id: 'A.50',
-                title: 'A.50 Méthode - Éléments nilpotents',
-                method: 'Utiliser l\'identité géométrique. Travailler avec des éléments nilpotents dans un anneau. Existe-t-il des éléments inversibles nilpotents ? Exemple d\'éléments nilpotents.',
-                answer: 'Identité géométrique :\naⁿ - bⁿ = (a-b)(aⁿ⁻¹ + aⁿ⁻²b + ... + abⁿ⁻² + bⁿ⁻¹)\n\nÉlément nilpotent :\na nilpotent ⟺ ∃n : aⁿ = 0\n\nProprié :\n• Si xy nilpotent ⟹ yx nilpotent\n• Si x,y nilpotents qui commutent ⟹ x+y, xy nilpotents\n• Si x nilpotent ⟹ 1 - x inversible\n  (1-x)⁻¹ = 1 + x + x² + ... + xⁿ⁻¹\n\nInversibles nilpotents :\nAucun : si x nilpotent et inversible ⟹ xⁿ = 0 ⟹ x = 0 (contradiction)\n\nMatrice nilpotente :\nNₙ = [[0,1,0,...],[0,0,1,...],[...],[0,0,0,...,0]]\nNⁿ = 0, (I-N)⁻¹ = I + N + ... + Nⁿ⁻¹'
-            },
-            {
-                chapter: 12,
-                id: 'A.51',
-                title: 'A.51 Méthode - Éléments inversibles',
-                method: 'Structure de l\'ensemble des éléments inversibles d\'un anneau. Méthode de détermination.',
-                answer: 'Groupe des inversibles :\nU(A) = {a ∈ A : ∃b tel que ab = ba = 1}\nForme un groupe pour ×\n\nDétermination :\n• U(ℤ) = {±1} = U₂\n• U(ℚ) = ℚ*\n• U(K[X]) = K* (polynômes constants non nuls)\n• U(Mₙ(K)) = GLₙ(K) (matrices inversibles)\n• U(ℤ/nℤ) = {k : gcd(k,n) = 1}\n\nExemple : ℤ[i] = {a+ib : a,b ∈ ℤ}\nz inversible ⟺ N(z) = a² + b² = 1\nU(ℤ[i]) = {±1, ±i}\n\nFormule :\n|U(ℤ/nℤ)| = φ(n) (Euler)'
-            },
-            {
-                chapter: 12,
-                id: 'B.5',
-                title: 'B.5 Méthode - Arithmétique mod n',
-                method: 'Calculer dans l\'anneau ℤ/nℤ. Relation entre les classes d\'équivalence de ℤ/nℤ et la congruence.',
-                answer: 'Classes : x̄ = {y ∈ ℤ : y ≡ x [n]}\nℤ/nℤ = {0̄, 1̄, ..., n-1̄} (n éléments)\n\nLois bien définies :\nx̄ + ȳ = x+ȳ\nx̄ · ȳ = xȳ\n\nIntégrité :\n(ℤ/nℤ,+,×) intègre ⟺ n premier\n\nInversibles :\nk̄ inversible ⟺ gcd(k,n) = 1\nU(ℤ/12ℤ) = {1̄, 5̄, 7̄, 11̄} (4 = φ(12) éléments)\n\nCorps :\n(ℤ/nℤ,+,×) corps ⟺ n premier\n\nPetit Théorème de Fermat :\nPour p premier : kᵖ⁻¹ ≡ 1 [p] si gcd(k,p) = 1\nkᵖ ≡ k [p] pour tout k'
-            }
+            { chapter: 3, 
+                id: 'A.11', 
+                title: 'A.11 Méthode - Coefficients binomiaux', 
+                method: 'Calcul de différentes sommes faisant intervenir des coefficients binomiaux.', 
+                answer: '**Formule du Binôme de Newton:**\n$$(a + b)^n = \\sum_{k=0}^n \\binom{n}{k} a^k b^{n-k}$$\n\n**Formule du Chef:**\n$$k \\binom{n}{k} = n \\binom{n-1}{k-1}$$\n$$\\sum_{k=p}^n \\binom{k}{p} = \\binom{n+1}{p+1}$$\n\n**Relation de Pascal:**\n$$\\binom{n}{k} + \\binom{n}{k-1} = \\binom{n+1}{k}$$' },
         ];
-        
-        let allCards = [];
-        let flipped = {};
-        
+
+        let flippedCards = {};
+        let allCards = [...methods];
+
         function initCards() {
-            allCards = [...methods];
             renderCards();
             updateStats();
         }
-        
+
         function renderCards() {
             const container = document.getElementById('cardsContainer');
             container.innerHTML = '';
@@ -790,21 +302,21 @@
                     currentChapter = card.chapter;
                     chapterDiv = document.createElement('div');
                     chapterDiv.className = 'chapter-section';
-                    const chapters = [
-                        'Techniques de calculs en analyse',
-                        'Fonctions exponentielle et logarithme',
-                        'Calculs algébriques',
-                        'Fonctions circulaires',
-                        'Nombres complexes',
-                        'Calcul de primitives',
-                        'Équations différentielles',
-                        'Rudiments de logique',
-                        'Ensembles et applications',
-                        'Ensembles de nombres usuels',
-                        'Systèmes linéaires et Matrices',
-                        'Structures algébriques usuelles'
-                    ];
-                    chapterDiv.innerHTML = `<h2>Chapitre ${currentChapter} - ${chapters[currentChapter-1]}</h2>`;
+                    const chapters = {
+                        1: 'Techniques de calculs en analyse',
+                        2: 'Fonctions exponentielle et logarithme',
+                        3: 'Calculs algébriques',
+                        4: 'Fonctions circulaires',
+                        5: 'Nombres complexes',
+                        6: 'Calcul de primitives',
+                        7: 'Équations différentielles',
+                        8: 'Rudiments de logique',
+                        9: 'Ensembles et applications',
+                        10: 'Ensembles de nombres usuels',
+                        11: 'Systèmes linéaires et Matrices',
+                        12: 'Structures algébriques usuelles'
+                    };
+                    chapterDiv.innerHTML = `<h2>Chapitre ${currentChapter} - ${chapters[currentChapter]}</h2>`;
                     const grid = document.createElement('div');
                     grid.className = 'cards-grid';
                     chapterDiv.appendChild(grid);
@@ -813,68 +325,89 @@
                 
                 const grid = chapterDiv.querySelector('.cards-grid');
                 const cardEl = document.createElement('div');
-                cardEl.className = 'card' + (flipped[card.id] ? ' flipped' : '');
+                cardEl.className = 'card' + (flippedCards[card.id] ? ' flipped' : '');
+                
+                const answerHTML = card.answer
+                    .replace(/\n/g, '<br>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                
                 cardEl.innerHTML = `
                     <span class="card-badge">${card.id}</span>
                     <div class="card-front">${card.title}</div>
                     <div class="card-method">${card.method}</div>
-                    <div class="card-answer">${card.answer.replace(/\n/g, '<br>')}</div>
+                    <div class="card-answer">${answerHTML}</div>
                     <div class="card-flip-hint">Cliquez pour voir la réponse</div>
                 `;
+                
                 cardEl.onclick = () => toggleCard(card.id, cardEl);
                 grid.appendChild(cardEl);
             });
+            
+            if (allCards.length === 0) {
+                container.innerHTML = '<div class="no-results">Aucune méthode trouvée. Essayez une autre recherche.</div>';
+            }
+            
+            if (window.MathJax) {
+                MathJax.typesetPromise().catch(err => console.log(err));
+            }
         }
-        
+
         function toggleCard(cardId, element) {
-            flipped[cardId] = !flipped[cardId];
+            flippedCards[cardId] = !flippedCards[cardId];
             element.classList.toggle('flipped');
+            updateStats();
+            
+            if (window.MathJax) {
+                MathJax.typesetPromise().catch(err => console.log(err));
+            }
         }
-        
+
         function flipAllCards() {
             document.querySelectorAll('.card').forEach(card => {
                 const id = card.querySelector('.card-badge').textContent;
-                flipped[id] = !flipped[id];
+                flippedCards[id] = !flippedCards[id];
                 card.classList.toggle('flipped');
             });
+            updateStats();
+            
+            if (window.MathJax) {
+                MathJax.typesetPromise().catch(err => console.log(err));
+            }
         }
-        
+
         function filterByChapter() {
             const chapter = document.getElementById('chapterSelect').value;
             allCards = chapter ? methods.filter(m => m.chapter == chapter) : [...methods];
             renderCards();
         }
-        
+
         function searchCards() {
             const query = document.getElementById('searchBox').value.toLowerCase();
             allCards = methods.filter(m => 
-                m.title.toLowerCase().includes(query) ||
-                m.method.toLowerCase().includes(query) ||
+                m.title.toLowerCase().includes(query) || 
+                m.method.toLowerCase().includes(query) || 
                 m.id.toLowerCase().includes(query)
             );
             renderCards();
             
             if (allCards.length === 0) {
-                document.getElementById('cardsContainer').innerHTML = 
-                    '<div class="no-results">Aucune méthode trouvée. Essayez une autre recherche.</div>';
+                document.getElementById('cardsContainer').innerHTML = '<div class="no-results">Aucune méthode trouvée. Essayez une autre recherche.</div>';
             }
         }
-        
+
         function updateStats() {
             document.getElementById('totalCount').textContent = methods.length;
-            const mastered = Object.keys(flipped).filter(k => flipped[k]).length;
+            const mastered = Object.keys(flippedCards).filter(k => flippedCards[k]).length;
             document.getElementById('masteredCount').textContent = mastered;
-            document.getElementById('completionRate').textContent = 
-                Math.round((mastered / methods.length) * 100) + '%';
+            document.getElementById('completionRate').textContent = Math.round(mastered / methods.length * 100) + '%';
         }
-        
+
         function toggleStats() {
             const panel = document.getElementById('statisticsPanel');
-            panel.style.display = panel.style.display === 'none' ? 'grid' : 'none';
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
             updateStats();
         }
-        
-        // Initialisation
+
         initCards();
     </script>
 </body>
