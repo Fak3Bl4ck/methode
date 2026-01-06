@@ -260,7 +260,8 @@
                 id: 'A.8',
                 title: 'A.8 Méthode - Télescopage',
                 method: 'Simplifier une somme par télescopage. Décomposition d\'une fraction en éléments simples.',
-                answer: '**Télescopage :**\n$$\\sum_{k=0}^n (u_{k+1}-u_k)=u_n-u_0$$\n\n**Décomposition en éléments simples :**\n$$\\frac{1}{x(x+1)(x+2)}=\\frac{A}{x}+\\frac{B}{x+1}+\\frac{C}{x+2}$$\n\nMultiplier par dénominateur et faire \\(x=0,-1,-2\\) :\n$$A=\\frac12,\\quad B=-1,\\quad C=\\frac12$$'
+                answer: '**Télescopage :**\n$$\\sum_{k=0}^{n}\\bigl(u_{k+1}-u_k\\bigr)=u_{n+1}-u_0$$\n\n**Décomposition en éléments simples :**\n$$\\frac{1}{x(x+1)(x+2)}=\\frac{A}{x}+\\frac{B}{x+1}+\\frac{C}{x+2}$$\n\nMultiplier par le dénominateur commun \(f(x) par x, (x+1) et (x+2)\) à gauche puis à droite, puis évaluer en \(x=0,-1,-2\) :\n$$A=\\frac12,\\quad B=-1,\\quad C=\\frac12$$'
+
             },
             
             { chapter: 3, 
@@ -280,6 +281,65 @@
                 title: 'A.11 Méthode - Coefficients binomiaux', 
                 method: 'Calcul de différentes sommes faisant intervenir des coefficients binomiaux.', 
                 answer: '**Formule du Binôme de Newton:**\n$$(a + b)^n = \\sum_{k=0}^n \\binom{n}{k} a^k b^{n-k}$$\n\n**Formule du Chef:**\n$$k \\binom{n}{k} = n \\binom{n-1}{k-1}$$\n$$\\sum_{k=p}^n \\binom{k}{p} = \\binom{n+1}{p+1}$$\n\n**Relation de Pascal:**\n$$\\binom{n}{k} + \\binom{n}{k-1} = \\binom{n+1}{k}$$' },
+                    // CHAPITRE 8
+            { 
+            chapter: 8, 
+            id: 'A.30', 
+            title: 'A.30 Méthode - Raisonnements logiques', 
+            method: 'Utiliser différents raisonnements possibles pour déterminer la véracité d\'une assertion.', 
+            answer: '**Implication :**\nP \\(\\Rightarrow\\) Q.\n\n**Contraposée :**\n\\(\\neg Q \\Rightarrow \\neg P\\).\n\n**Raisonnement par l\'absurde :**\nPour montrer que P est vraie, supposer \\(\\neg P\\) puis obtenir une contradiction.\n\n**Analyse / synthèse (existence) :**\nAnalyse : supposer l\'objet existe et trouver des conditions nécessaires.\nSynthèse : vérifier que ces conditions suffisent (construction + vérification).\n\n**Récurrence :**\n- Simple : \\(P(0)\\) et \\(P(n)\\Rightarrow P(n+1)\\).\n- Forte : \\(P(0)\\) et \\(\\forall n,\\ (\\forall k\\le n, P(k))\\Rightarrow P(n+1)\\).\n- Double : initialiser \\(P(0)\\), \\(P(1)\\) puis \\(P(n)\\wedge P(n+1)\\Rightarrow P(n+2)\\).' 
+            },
+
+            // CHAPITRE 9
+            { 
+            chapter: 9, 
+            id: 'A.31', 
+            title: 'A.31 Méthode - Égalité d\'ensembles', 
+            method: 'Citer trois méthodes pour montrer que deux ensembles sont égaux.', 
+            answer: '**Méthode 1 : Double inclusion**\nMontrer \\(A\\subset B\\) et \\(B\\subset A\\).\n\n**Méthode 2 : Équivalences (élément par élément)**\nMontrer \\(x\\in A \\Leftrightarrow x\\in B\\).\n\n**Méthode 3 : Calcul avec les opérations sur les ensembles**\nTransformer avec \\(\\cup,\\ \\cap,\\ \\setminus,\\ ^c\\) (De Morgan, distributivité, etc.).' 
+            },
+
+            { 
+            chapter: 9, 
+            id: 'A.32', 
+            title: 'A.32 Méthode - Images directes/réciproques', 
+            method: 'Déterminer l\'image directe et l\'image réciproque d\'un ensemble par une application. Se souvenir de l\'erreur à ne pas commettre.', 
+            answer: '**Image directe :**\n\\(f(A)=\\{y\\in Y\\mid \\exists x\\in A,\\ f(x)=y\\}\\).\n\n**Image réciproque :**\n\\(f^{-1}(B)=\\{x\\in X\\mid f(x)\\in B\\}\\).\n\n**Méthode pratique :**\n- Pour \\(f^{-1}(B)\\) : résoudre la condition \\(f(x)\\in B\\).\n- Pour \\(f(A)\\) : décrire \\(y=f(x)\\) avec \\(x\\in A\\) (souvent le plus dur : existence).\n\n**Erreur classique :**\nNe pas confondre \\(f^{-1}(B)\\) (image réciproque) avec l\'inverse de fonction (qui n\'existe que si \\(f\\) est bijective).' 
+            },
+
+            { 
+            chapter: 9, 
+            id: 'A.33', 
+            title: 'A.33 Méthode - Propriétés de composée', 
+            method: 'Montrer qu\'une application est injective, surjective ou bijective à l\'aide des propriétés sur la composée.', 
+            answer: '**Règles :**\n- Si \\(v\\circ u\\) est injective, alors \\(u\\) est injective.\n- Si \\(v\\circ u\\) est surjective, alors \\(v\\) est surjective.\n- Si \\(u\\) et \\(v\\) sont injectives, alors \\(v\\circ u\\) est injective.\n- Si \\(u\\) et \\(v\\) sont surjectives, alors \\(v\\circ u\\) est surjective.\n- Si \\(u\\) et \\(v\\) sont bijectives, alors \\(v\\circ u\\) est bijective.' 
+            },
+
+            { 
+            chapter: 9, 
+            id: 'A.34', 
+            title: 'A.34 Méthode - Injectivité', 
+            method: 'Montrer qu\'une application est injective à l\'aide de deux méthodes algébriques et d\'une méthode analytique.', 
+            answer: '**Méthode algébrique 1 : définition**\nMontrer : \\(x=y \\Leftrightarrow f(x)=f(y)\\).\n\n**Méthode algébrique 2 : équation**\nMontrer : pour tout \\(y\\), l\'équation \\(f(x)=y\\) admet au plus une solution.\n\n**Méthode analytique : monotonie**\nSi \\(f\\) est dérivable sur un intervalle et \\(f\'\\ge 0\\) (ou \\(f\'\\le 0\\)) partout avec stricte monotonie, alors \\(f\\) est injective.' 
+            },
+
+            { 
+            chapter: 9, 
+            id: 'A.35', 
+            title: 'A.35 Méthode - Surjectivité', 
+            method: 'Montrer qu\'une application est surjective à l\'aide de deux méthodes algébriques et d\'une méthode analytique.', 
+            answer: '**Méthode algébrique 1 : définition**\nMontrer : \\(\\forall y\\in Y,\\ \\exists x\\in X\\) tel que \\(f(x)=y\\).\n\n**Méthode algébrique 2 : image**\nMontrer : \\(\\mathrm{Im}(f)=Y\\).\n\n**Méthode analytique : TVI**\nSi \\(f\\) est continue sur un intervalle et prend des valeurs de part et d\'autre de \\(y\\), alors il existe \\(x\\) tel que \\(f(x)=y\\) (théorème des valeurs intermédiaires).' 
+            },
+
+            { 
+            chapter: 9, 
+            id: 'A.36', 
+            title: 'A.36 Méthode - Bijectivité', 
+            method: 'Donner trois méthodes pour montrer qu\'une application est bijective et deux manières pour déterminer sa bijection réciproque.', 
+            answer: '**Montrer que \\(f\\) est bijective :**\n- Injective et surjective.\n- Existence de \\(g\\) telle que \\(f\\circ g=\\mathrm{id}\\) et \\(g\\circ f=\\mathrm{id}\\).\n- Méthode analytique (sur un intervalle) : \\(f\\) continue et strictement monotone, puis surjectivité via l\'ensemble image (limites) + TVI.\n\n**Trouver la réciproque \\(f^{-1}\\) :**\n- Résoudre \\(y=f(x)\\) (inconnue \\(x\\)) et exprimer \\(x\\) en fonction de \\(y\\).\n- Trouver \\(g\\) et vérifier \\(f\\circ g=\\mathrm{id}\\) et \\(g\\circ f=\\mathrm{id}\\).' 
+            },
+
+    
         ];
 
         let flippedCards = {};
